@@ -1,34 +1,25 @@
 import { useState } from "react";
-import type { MCPClientState } from "../lib/PlaywrightMCPClient";
-import {
-	callTool,
-	createMCPClient,
-	getTools,
-	initializeMCP,
-} from "../lib/PlaywrightMCPClient";
+import { listTools, callTool, initialize } from "../lib/PlaywrightMCPClient";
 import "./App.css";
 
-function App() {
-	const [mcpState, setMCPState] = useState<MCPClientState | null>(null);
-	const [baseUrl, setBaseUrl] = useState("");
-	const [toolName, setToolName] = useState("");
-	const [toolArgs, setToolArgs] = useState("");
-	const [result, setResult] = useState("");
+const App = () => {
+	const [mcpSessionId, setMcpSessionId] = useState<string | null>(null);
+
+	const [toolName, setToolName] = useState<string>("browser_navigate");
+	const [toolArgs, setToolArgs] = useState<string>('{"url": "https://google.com"}');
+	const [result, setResult] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [tools, setTools] = useState<any[]>([]);
 
+	
 	const handleInitialize = async () => {
 		setLoading(true);
 		try {
-			const client = createMCPClient(baseUrl);
-			const { result: initResult, state } = await initializeMCP(client);
-			setMCPState(state);
-			setResult(`Initialized: ${JSON.stringify(initResult, null, 2)}`);
+			await initialize();
+			const data = await listTools();
+			setTools(data.tools);
+			setMcpSessionId(mcpSessionId);
 
-			// Get available tools
-			const { tools: availableTools, state: newState } = await getTools(state);
-			setTools(availableTools);
-			setMCPState(newState);
 		} catch (error) {
 			setResult(
 				`Error: ${error instanceof Error ? error.message : "Unknown error"}`,
@@ -36,10 +27,9 @@ function App() {
 		}
 		setLoading(false);
 	};
-
+	
 	const handleCallTool = async () => {
-		if (!mcpState || !toolName) return;
-
+		if (!toolName) return;
 		setLoading(true);
 		try {
 			let args = {};
@@ -49,13 +39,11 @@ function App() {
 				args = {};
 			}
 
-			const { result: toolResult, state } = await callTool(
-				mcpState,
+			const data = await callTool(
 				toolName,
 				args,
 			);
-			setMCPState(state);
-			setResult(JSON.stringify(toolResult, null, 2));
+			setResult(data);
 		} catch (error) {
 			setResult(
 				`Error: ${error instanceof Error ? error.message : "Unknown error"}`,
@@ -69,71 +57,60 @@ function App() {
 			<h1>Playwright MCP Client</h1>
 
 			<div style={{ marginBottom: "20px" }}>
-				<label>
-					MCP Server URL:
-					<input
-						type="text"
-						value={baseUrl}
-						onChange={(e) => setBaseUrl(e.target.value)}
-						style={{ marginLeft: "10px", width: "300px" }}
-					/>
-				</label>
 				<button type="button" onClick={handleInitialize} disabled={loading}>
 					Initialize
 				</button>
 			</div>
 
-			{mcpState && (
-				<>
-					<div style={{ marginBottom: "20px" }}>
-						<h3>Available Tools:</h3>
-						<select
-							value={toolName}
-							onChange={(e) => setToolName(e.target.value)}
-							style={{ marginBottom: "10px", width: "300px" }}
-						>
-							<option value="">Select a tool...</option>
-							{tools.map((tool) => (
-								<option key={tool.name} value={tool.name}>
-									{tool.name} - {tool.description}
-								</option>
-							))}
-						</select>
+			{tools.length > 0 && (
+				<div style={{ marginBottom: "20px" }}>
+					<h3>Available Tools:</h3>
+					<select
+						value={toolName}
+						onChange={(e) => setToolName(e.target.value)}
+						style={{ marginBottom: "10px", width: "300px" }}
+					>
+						<option value="">Select a tool...</option>
+						{tools.map((tool) => (
+							<option key={tool.name} value={tool.name}>
+								{tool.name} - {tool.description}
+							</option>
+						))}
+					</select>
 
-						<div style={{ marginBottom: "10px" }}>
-							<label>
-								Tool Name:
-								<input
-									type="text"
-									value={toolName}
-									onChange={(e) => setToolName(e.target.value)}
-									placeholder="e.g., browser_click"
-									style={{ marginLeft: "10px", width: "300px" }}
-								/>
-							</label>
-						</div>
-
-						<div style={{ marginBottom: "10px" }}>
-							<label>
-								Arguments (JSON):
-								<textarea
-									value={toolArgs}
-									onChange={(e) => setToolArgs(e.target.value)}
-									placeholder='{"element": "button", "ref": "e1"}'
-									style={{ marginLeft: "10px", width: "300px", height: "80px" }}
-								/>
-							</label>
-						</div>
-
-						<button
-							type="button"
-							onClick={handleCallTool}
-							disabled={loading || !toolName}
-						>
-							Call Tool
-						</button>
+					<div style={{ marginBottom: "10px" }}>
+						<label>
+							Tool Name:
+							<input
+								type="text"
+								value={toolName}
+								onChange={(e) => setToolName(e.target.value)}
+								placeholder="e.g., browser_click"
+								style={{ marginLeft: "10px", width: "300px" }}
+							/>
+						</label>
 					</div>
-				</>
+
+					<div style={{ marginBottom: "10px" }}>
+						<label>
+							Arguments (JSON):
+							<textarea
+								value={toolArgs}
+								onChange={(e) => setToolArgs(e.target.value)}
+								placeholder='{"element": "button", "ref": "e1"}'
+								style={{ marginLeft: "10px", width: "300px", height: "80px" }}
+							/>
+						</label>
+					</div>
+
+					<button
+						type="button"
+						onClick={handleCallTool}
+						disabled={loading || !toolName}
+					>
+						Call Tool
+					</button>
+				</div>
 			)}
 
 			<div style={{ marginTop: "20px" }}>

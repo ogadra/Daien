@@ -10,6 +10,10 @@ export default defineConfig({
 				target: "http://localhost:8000",
 				changeOrigin: true,
 				rewrite: (path) => path.replace(/^\/api\/mcp/, "/mcp"),
+				headers: {
+					"Connection": "keep-alive"
+				},
+				timeout: 60000,
 			},
 		},
 	},

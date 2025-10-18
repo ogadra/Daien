@@ -8,7 +8,8 @@
 		"build": "pnpm --recursive run build",
 		"format": "biome check --write .",
 		"check": "biome check .",
-    "client": "pnpm --filter 'client'"
+		"client": "pnpm --filter 'client'",
+    "server": "pnpm --filter 'server'"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.2.5"
