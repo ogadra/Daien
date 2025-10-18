@@ -12,12 +12,9 @@ if (!mcpServerUrl) {
 	throw new Error("VITE_MCP_SERVER_URL environment variable is required");
 }
 
-const transport = new StreamableHTTPClientTransport(
-	new URL(mcpServerUrl),
-	{
-		sessionId: undefined,
-	},
-);
+const transport = new StreamableHTTPClientTransport(new URL(mcpServerUrl), {
+	sessionId: undefined,
+});
 
 const client = new Client({
 	name: "daien",
