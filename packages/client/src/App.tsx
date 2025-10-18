@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { listTools, callTool, initialize } from "../lib/PlaywrightMCPClient";
+import { callTool, initialize, listTools } from "../lib/PlaywrightMCPClient";
 import "./App.css";
 
 const App = () => {
 	const [mcpSessionId, setMcpSessionId] = useState<string | null>(null);
 
 	const [toolName, setToolName] = useState<string>("browser_navigate");
-	const [toolArgs, setToolArgs] = useState<string>('{"url": "https://google.com"}');
+	const [toolArgs, setToolArgs] = useState<string>(
+		'{"url": "https://google.com"}',
+	);
 	const [result, setResult] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [tools, setTools] = useState<any[]>([]);
 
-	
 	const handleInitialize = async () => {
 		setLoading(true);
 		try {
@@ -19,7 +20,6 @@ const App = () => {
 			const data = await listTools();
 			setTools(data.tools);
 			setMcpSessionId(mcpSessionId);
-
 		} catch (error) {
 			setResult(
 				`Error: ${error instanceof Error ? error.message : "Unknown error"}`,
@@ -27,7 +27,7 @@ const App = () => {
 		}
 		setLoading(false);
 	};
-	
+
 	const handleCallTool = async () => {
 		if (!toolName) return;
 		setLoading(true);
@@ -39,10 +39,7 @@ const App = () => {
 				args = {};
 			}
 
-			const data = await callTool(
-				toolName,
-				args,
-			);
+			const data = await callTool(toolName, args);
 			setResult(data);
 		} catch (error) {
 			setResult(
@@ -129,6 +126,6 @@ const App = () => {
 			</div>
 		</div>
 	);
-}
+};
 
 export default App;

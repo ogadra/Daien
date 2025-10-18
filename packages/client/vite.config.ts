@@ -11,7 +11,7 @@ export default defineConfig({
 				changeOrigin: true,
 				rewrite: (path) => path.replace(/^\/api\/mcp/, "/mcp"),
 				headers: {
-					"Connection": "keep-alive"
+					Connection: "keep-alive",
 				},
 				timeout: 60000,
 			},
