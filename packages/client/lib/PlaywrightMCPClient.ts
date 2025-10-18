@@ -7,8 +7,13 @@ import {
 	ListToolsResultSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 
+const mcpServerUrl = import.meta.env.VITE_MCP_SERVER_URL;
+if (!mcpServerUrl) {
+	throw new Error("VITE_MCP_SERVER_URL environment variable is required");
+}
+
 const transport = new StreamableHTTPClientTransport(
-	new URL("http://localhost:3001/mcp"),
+	new URL(mcpServerUrl),
 	{
 		sessionId: undefined,
 	},
