@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { callTool, initialize, listTools, type Tool } from "../lib/PlaywrightMCPClient";
+import {
+	callTool,
+	initialize,
+	listTools,
+	type Tool,
+} from "../lib/PlaywrightMCPClient";
 import "./App.css";
 import { Button, Code, HStack, Select, Textarea, VStack } from "@packages/ui";
 
@@ -23,7 +28,7 @@ const App = () => {
 
 	useEffect(() => {
 		getTools();
-	
+
 		return () => void 0;
 	}, [getTools]);
 
@@ -78,53 +83,53 @@ const App = () => {
 			</div>
 			<HStack align="start">
 				<VStack width="50vw" align="center" justify="start">
-				{tools.length > 0 && (
-					<div style={{ margin: "4px" }}>
-						<h3>Available Tools:</h3>
-						<VStack style={{ margin: "8px" }}>
-							<Select.Root
-								placeholder="使用するツールを選びます"
-							>
-								{tools.map((tool) => (
-									<Select.Option key={tool.name} value={tool.name}>
-										{tool.name}
-									</Select.Option>
-								))}
-							</Select.Root>
-						</VStack>
+					{tools.length > 0 && (
+						<div style={{ margin: "4px" }}>
+							<h3>Available Tools:</h3>
+							<VStack style={{ margin: "8px" }}>
+								<Select.Root placeholder="使用するツールを選びます">
+									{tools.map((tool) => (
+										<Select.Option key={tool.name} value={tool.name}>
+											{tool.name}
+										</Select.Option>
+									))}
+								</Select.Root>
+							</VStack>
 
-						<VStack style={{ margin: "8px" }}>
-							<label htmlFor="tool-args">
-								Arguments (JSON):
-							</label>
+							<VStack style={{ margin: "8px" }}>
+								<label htmlFor="tool-args">Arguments (JSON):</label>
 								<Textarea
-								value={toolArgs}
-								onChange={(e) => setToolArgs(e.target.value)}
-								style={{ width: "100%", height: "80px" }}
-							/>
-						</VStack>
+									value={toolArgs}
+									onChange={(e) => setToolArgs(e.target.value)}
+									style={{ width: "100%", height: "80px" }}
+								/>
+							</VStack>
 
-						<button
-							type="button"
-							onClick={handleCallTool}
-							disabled={loading || !toolName}
-						>
-							Call Tool
-						</button>
-					</div>
-				)}
+							<button
+								type="button"
+								onClick={handleCallTool}
+								disabled={loading || !toolName}
+							>
+								Call Tool
+							</button>
+						</div>
+					)}
 				</VStack>
 				<VStack width="50vw">
 					<div style={{ margin: "4px" }}>
 						<h3>Result</h3>
-						{
-							result && (
-								<Code style={{ whiteSpace: "pre-wrap", textAlign: "left", overflowX: "scroll", width: "90%" }}>
-									{loading ? "Loading..." : result}
-								</Code>
-							)
-						}
-						
+						{result && (
+							<Code
+								style={{
+									whiteSpace: "pre-wrap",
+									textAlign: "left",
+									overflowX: "scroll",
+									width: "90%",
+								}}
+							>
+								{loading ? "Loading..." : result}
+							</Code>
+						)}
 					</div>
 				</VStack>
 			</HStack>

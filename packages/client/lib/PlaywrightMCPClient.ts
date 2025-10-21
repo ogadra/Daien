@@ -6,6 +6,7 @@ import {
 	type ListToolsRequest,
 	ListToolsResultSchema,
 } from "@modelcontextprotocol/sdk/types.js";
+
 // Removed invalid import for objectOutputType
 
 const mcpServerUrl = import.meta.env.VITE_MCP_SERVER_URL;
@@ -37,7 +38,7 @@ export interface Tool {
 		type: "object";
 		properties?: Record<string, unknown> | undefined;
 		required?: string[] | undefined;
-	} & { [k: string]: unknown; }
+	} & { [k: string]: unknown };
 	annotations?: {
 		title?: string;
 		readOnlyHint?: boolean;
@@ -53,7 +54,7 @@ export const listTools = async (): Promise<Tool[]> => {
 	};
 	// const res = await client.request(req, ListToolsResultSchema) as unknown as Tool[];
 	const res = await client.request(req, ListToolsResultSchema);
-	
+
 	return res.tools;
 };
 
