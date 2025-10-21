@@ -6,6 +6,7 @@ import {
 	type ListToolsRequest,
 	ListToolsResultSchema,
 } from "@modelcontextprotocol/sdk/types.js";
+// Removed invalid import for objectOutputType
 
 const mcpServerUrl = import.meta.env.VITE_MCP_SERVER_URL;
 if (!mcpServerUrl) {
@@ -29,13 +30,31 @@ export const initialize = async () => {
 	await client.connect(transport);
 };
 
-export const listTools = async () => {
+export interface Tool {
+	name: string;
+	description?: string;
+	inputSchema: {
+		type: "object";
+		properties?: Record<string, unknown> | undefined;
+		required?: string[] | undefined;
+	} & { [k: string]: unknown; }
+	annotations?: {
+		title?: string;
+		readOnlyHint?: boolean;
+		destructiveHint?: boolean;
+		openWorldHint?: boolean;
+	};
+}
+
+export const listTools = async (): Promise<Tool[]> => {
 	const req: ListToolsRequest = {
 		method: "tools/list",
 		params: {},
 	};
+	// const res = await client.request(req, ListToolsResultSchema) as unknown as Tool[];
 	const res = await client.request(req, ListToolsResultSchema);
-	return res;
+	
+	return res.tools;
 };
 
 export const callTool = async (
@@ -54,6 +73,7 @@ export const callTool = async (
 
 	res.content.forEach((item) => {
 		if (item.type === "text") {
+			console.log(item.text);
 			contentText += item.text;
 		} else {
 			throw Error("Unsupported content type: " + item.type);

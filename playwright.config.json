@@ -7,6 +7,5 @@
 		"isolated": true
 	},
 	"saveSession": false,
-	"outputDir": "images/",
-	"capabilities": ["core"]
+	"outputDir": "images/"
 }
