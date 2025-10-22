@@ -201,6 +201,8 @@ const App = () => {
 													fontFamily: "monospace",
 													fontSize: "14px",
 													textAlign: "left",
+													maxWidth: "40vw",
+													overflowX: "scroll",
 												}}
 											>
 												{renderValue(selectedTool)}
