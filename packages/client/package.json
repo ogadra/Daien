@@ -13,7 +13,10 @@
 		"@packages/ui": "workspace:*",
 		"dotenv": "^17.2.3",
 		"react": "^19.1.1",
-		"react-dom": "^19.1.1"
+		"react-dom": "^19.1.1",
+		"@types/react-syntax-highlighter": "^15.5.13",
+		"react-markdown": "^10.1.0",
+		"react-syntax-highlighter": "^15.6.6"
 	},
 	"devDependencies": {
 		"@types/node": "^24.6.0",

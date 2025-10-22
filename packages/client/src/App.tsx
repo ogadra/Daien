@@ -6,7 +6,10 @@ import {
 	type Tool,
 } from "../lib/PlaywrightMCPClient";
 import "./App.css";
-import { Button, Code, HStack, Select, Textarea, VStack } from "@packages/ui";
+import { Button, HStack, Select, Textarea, VStack } from "@packages/ui";
+import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const App = () => {
 	const [toolName, setToolName] = useState<string>("browser_navigate");
@@ -230,16 +233,52 @@ const App = () => {
 					<div style={{ margin: "4px" }}>
 						<h3>Result</h3>
 						{result && (
-							<Code
+							<div
 								style={{
-									whiteSpace: "pre-wrap",
 									textAlign: "left",
 									overflowX: "scroll",
 									width: "90%",
+									backgroundColor: "#f6f8fa",
+									borderRadius: "4px",
+									padding: "12px",
 								}}
 							>
-								{loading ? "Loading..." : result}
-							</Code>
+								{loading ? (
+									"Loading..."
+								) : (
+									<ReactMarkdown
+										components={{
+											code({ node, inline, className, children, ...props }) {
+												const match = /language-(\w+)/.exec(className || "");
+												return !inline && match ? (
+													<SyntaxHighlighter
+														style={oneDark}
+														language={match[1]}
+														PreTag="div"
+														{...props}
+													>
+														{String(children).replace(/\n$/, "")}
+													</SyntaxHighlighter>
+												) : (
+													<code
+														{...props}
+														style={{
+															backgroundColor: "#e1e4e8",
+															padding: "2px 4px",
+															borderRadius: "3px",
+															fontFamily: "monospace",
+														}}
+													>
+														{children}
+													</code>
+												);
+											},
+										}}
+									>
+										{result}
+									</ReactMarkdown>
+								)}
+							</div>
 						)}
 					</div>
 				</VStack>

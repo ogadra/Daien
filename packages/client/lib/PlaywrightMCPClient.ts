@@ -77,7 +77,7 @@ export const callTool = async (
 			console.log(item.text);
 			contentText += item.text;
 		} else {
-			throw Error("Unsupported content type: " + item.type);
+			throw Error(`Unsupported content type: ${item.type}`);
 		}
 	});
 	return contentText;
