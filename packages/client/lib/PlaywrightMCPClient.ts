@@ -47,6 +47,17 @@ export interface Tool {
 	};
 }
 
+export interface ImageContent {
+	data: string;
+	mimeType: string;
+	text?: string;
+}
+
+export interface ToolResponse {
+	text: string;
+	images: ImageContent[];
+}
+
 export const listTools = async (): Promise<Tool[]> => {
 	const req: ListToolsRequest = {
 		method: "tools/list",
@@ -61,7 +72,7 @@ export const listTools = async (): Promise<Tool[]> => {
 export const callTool = async (
 	toolName: string,
 	arguments_: Record<string, any>,
-): Promise<string> => {
+): Promise<ToolResponse> => {
 	const req: CallToolRequest = {
 		method: "tools/call",
 		params: {
@@ -71,14 +82,34 @@ export const callTool = async (
 	};
 	const res = await client.request(req, CallToolResultSchema);
 	let contentText = "";
+	const images: ImageContent[] = [];
 
 	res.content.forEach((item) => {
 		if (item.type === "text") {
 			console.log(item.text);
 			contentText += item.text;
+		} else if (item.type === "image") {
+			console.log("Image content received:", item);
+			// Handle image content
+			const imageData = item.data;
+			const mimeType = item.mimeType || "image/png";
+
+			images.push({
+				data: imageData,
+				mimeType,
+				text: item.text,
+			});
+
+			// Add reference to image in text
+			contentText += `\n\n[Image ${images.length}]${item.text ? `: ${item.text}` : ""}\n\n`;
 		} else {
-			throw Error(`Unsupported content type: ${item.type}`);
+			console.warn(`Unsupported content type: ${item.type}`);
+			contentText += `\n[Unsupported content type: ${item.type}]\n`;
 		}
 	});
-	return contentText;
+
+	return {
+		text: contentText,
+		images,
+	};
 };
