@@ -34,7 +34,7 @@ const parseJSON = (str?: string): ToolCallArgs => {
 	}
 };
 
-export const DisplayTools = ({
+export const Tools = ({
 	tools,
 	useToolName,
 	setUseToolName,

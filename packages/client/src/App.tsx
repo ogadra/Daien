@@ -6,8 +6,8 @@ import {
 	type Tool,
 	type ToolResponse,
 } from "../lib/PlaywrightMCPClient";
-import { DisplayTools } from "./components/displayTools";
 import { Result } from "./components/result";
+import { Tools } from "./components/tools";
 
 const App = (): JSX.Element => {
 	const [useToolName, setUseToolName] = useState<string>("browser_navigate");
@@ -67,7 +67,7 @@ const App = (): JSX.Element => {
 			</Button>
 
 			<HStack align="start">
-				<DisplayTools
+				<Tools
 					tools={tools}
 					useToolName={useToolName}
 					setUseToolName={setUseToolName}
