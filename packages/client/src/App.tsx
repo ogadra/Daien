@@ -6,7 +6,6 @@ import {
 	type Tool,
 	type ToolResponse,
 } from "../lib/PlaywrightMCPClient";
-import "./App.css";
 import {
 	Button,
 	Heading,
