@@ -2,6 +2,7 @@ pre-commit:
   parallel: false
   commands:
     001_biome_format:
+      stage_fixed: true
       glob: "*.{js,ts,jsx,tsx,json,jsonc}"
       run: pnpm format {staged_files}
     002_biome_check:

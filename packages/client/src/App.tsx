@@ -1,28 +1,19 @@
-import { useCallback, useState } from "react";
+import { Button, Heading, HStack, VStack } from "@packages/ui";
+import { type JSX, useCallback, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import {
-	callTool,
 	initialize,
 	listTools,
 	type Tool,
 	type ToolResponse,
 } from "../lib/PlaywrightMCPClient";
-import {
-	Button,
-	Heading,
-	HStack,
-	Select,
-	Textarea,
-	VStack,
-} from "@packages/ui";
-import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { DisplayTools } from "./components/displayTools";
 
-const App = () => {
-	const [toolName, setToolName] = useState<string>("browser_navigate");
-	const [toolArgs, setToolArgs] = useState<string>(
-		'{"url": "https://google.com"}',
-	);
+const App = (): JSX.Element => {
+	const [useToolName, setUseToolName] = useState<string>("browser_navigate");
+
 	const [result, setResult] = useState<ToolResponse | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [tools, setTools] = useState<Tool[]>([]);
@@ -41,28 +32,6 @@ const App = () => {
 		try {
 			await initialize();
 			await getTools();
-		} catch (error) {
-			setResult({
-				text: `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
-				images: [],
-			});
-		}
-		setLoading(false);
-	};
-
-	const handleCallTool = async () => {
-		if (!toolName) return;
-		setLoading(true);
-		try {
-			let args = {};
-			try {
-				args = toolArgs ? JSON.parse(toolArgs) : {};
-			} catch {
-				args = {};
-			}
-
-			const data = await callTool(toolName, args);
-			setResult(data);
 		} catch (error) {
 			setResult({
 				text: `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
@@ -100,142 +69,14 @@ const App = () => {
 			</Button>
 
 			<HStack align="start">
-				<VStack width="50vw" align="center" justify="start">
-					{tools.length > 0 && (
-						<div style={{ margin: "4px" }}>
-							<h3>Available Tools:</h3>
-							<VStack style={{ margin: "8px" }}>
-								<Select.Root
-									placeholder="使用するツール"
-									value={toolName}
-									onChange={(value) => setToolName(value)}
-								>
-									{tools.map((tool) => (
-										<Select.Option key={tool.name} value={tool.name}>
-											{tool.name}
-										</Select.Option>
-									))}
-								</Select.Root>
-							</VStack>
-
-							{toolName && (
-								<>
-									<h4>Selected Tool: {toolName}</h4>
-									{(() => {
-										const selectedTool = tools.find(
-											(tool) => tool.name === toolName,
-										);
-										if (!selectedTool) return null;
-
-										const renderValue = (
-											value: any,
-											depth = 0,
-										): React.ReactNode => {
-											const indent = "  ".repeat(depth);
-
-											if (value === null)
-												return <span style={{ color: "#999" }}>null</span>;
-											if (value === undefined)
-												return <span style={{ color: "#999" }}>undefined</span>;
-											if (typeof value === "string")
-												return (
-													<span style={{ color: "#0c7b2e" }}>"{value}"</span>
-												);
-											if (typeof value === "number")
-												return (
-													<span style={{ color: "#0366d6" }}>{value}</span>
-												);
-											if (typeof value === "boolean")
-												return (
-													<span style={{ color: "#e3116c" }}>
-														{value.toString()}
-													</span>
-												);
-
-											if (Array.isArray(value)) {
-												if (value.length === 0) return <span>[]</span>;
-												return (
-													<>
-														<span>[</span>
-														{value.map((item, index) => (
-															// biome-ignore lint/suspicious/noArrayIndexKey: tmporary
-															<div key={index} style={{ whiteSpace: "pre" }}>
-																{indent} {renderValue(item, depth + 1)}
-																{index < value.length - 1 && <span>,</span>}
-															</div>
-														))}
-														<span style={{ whiteSpace: "pre" }}>{indent}]</span>
-													</>
-												);
-											}
-
-											if (typeof value === "object") {
-												const entries = Object.entries(value);
-												if (entries.length === 0) return <span>{"{}"}</span>;
-												return (
-													<>
-														<span>{"{"}</span>
-														{entries.map(([key, val], index) => (
-															<div key={key} style={{ whiteSpace: "pre" }}>
-																{indent}{" "}
-																<span style={{ color: "#6f42c1" }}>
-																	"{key}"
-																</span>
-																: {renderValue(val, depth + 1)}
-																{index < entries.length - 1 && <span>,</span>}
-															</div>
-														))}
-														<span style={{ whiteSpace: "pre" }}>
-															{indent}
-															{"}"}
-														</span>
-													</>
-												);
-											}
-
-											return <span>{String(value)}</span>;
-										};
-
-										return (
-											<div
-												style={{
-													margin: "8px",
-													padding: "12px",
-													backgroundColor: "#f6f8fa",
-													borderRadius: "4px",
-													fontFamily: "monospace",
-													fontSize: "14px",
-													textAlign: "left",
-													maxWidth: "40vw",
-													overflowX: "scroll",
-												}}
-											>
-												{renderValue(selectedTool)}
-											</div>
-										);
-									})()}
-								</>
-							)}
-
-							<VStack style={{ margin: "8px" }}>
-								<label htmlFor="tool-args">Arguments (JSON):</label>
-								<Textarea
-									value={toolArgs}
-									onChange={(e) => setToolArgs(e.target.value)}
-									style={{ width: "100%", height: "80px" }}
-								/>
-							</VStack>
-
-							<button
-								type="button"
-								onClick={handleCallTool}
-								disabled={loading || !toolName}
-							>
-								Call Tool
-							</button>
-						</div>
-					)}
-				</VStack>
+				<DisplayTools
+					tools={tools}
+					useToolName={useToolName}
+					setUseToolName={setUseToolName}
+					loading={loading}
+					setLoading={setLoading}
+					setResult={setResult}
+				/>
 				<VStack width="50vw">
 					<div style={{ margin: "4px" }}>
 						<h3>Result</h3>
