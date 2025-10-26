@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
 	callTool,
 	initialize,
@@ -7,7 +7,7 @@ import {
 	type ToolResponse,
 } from "../lib/PlaywrightMCPClient";
 import "./App.css";
-import { Button, HStack, Select, Textarea, VStack } from "@packages/ui";
+import { Button, Heading, HStack, Select, Textarea, VStack } from "@packages/ui";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -29,12 +29,6 @@ const App = () => {
 			console.error("Error fetching tools:", error);
 		}
 	}, []);
-
-	useEffect(() => {
-		getTools();
-
-		return () => void 0;
-	}, [getTools]);
 
 	const handleInitialize = async () => {
 		setLoading(true);
@@ -84,19 +78,21 @@ const App = () => {
 				minHeight: "100vh",
 			}}
 		>
-			<h1>Daien (代演)</h1>
-			<h2>LLMの代わりに人力でMCPを呼び出す</h2>
+			<Heading as="h1" style={{ fontSize: "3rem" }}>
+				Daien (代演)
+			</Heading>
+			<Heading as="h2" style={{ fontSize: "1rem", fontWeight: "normal"}}>
+				LLMの代わりに人力でMCPを呼び出す
+			</Heading>
 
-			<div style={{ margin: "8px" }}>
-				<Button
-					color="black.950"
-					onClick={handleInitialize}
-					style={{ margin: "8px" }}
-					loading={loading}
-				>
-					Initialize
-				</Button>
-			</div>
+			<Button
+				onClick={handleInitialize}
+				loading={loading}
+				style={{ margin: "16px" }}
+			>
+				Initialize
+			</Button>
+
 			<HStack align="start">
 				<VStack width="50vw" align="center" justify="start">
 					{tools.length > 0 && (
