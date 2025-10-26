@@ -34,9 +34,14 @@ const parseJSON = (str?: string): ToolCallArgs => {
 	}
 };
 
-export const DisplayTools = (props: Props): JSX.Element => {
-	const { tools, useToolName, setUseToolName, loading, setLoading, setResult } =
-		props;
+export const DisplayTools = ({
+	tools,
+	useToolName,
+	setUseToolName,
+	loading,
+	setLoading,
+	setResult,
+}: Props): JSX.Element => {
 	const argsRef = useRef<HTMLTextAreaElement | null>(null);
 	const textAreaId = useId();
 
