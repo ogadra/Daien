@@ -7,8 +7,6 @@ import {
 	ListToolsResultSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 
-// Removed invalid import for objectOutputType
-
 const mcpServerUrl = import.meta.env.VITE_MCP_SERVER_URL;
 if (!mcpServerUrl) {
 	throw new Error("VITE_MCP_SERVER_URL environment variable is required");
@@ -50,7 +48,6 @@ export interface Tool {
 export interface ImageContent {
 	data: string;
 	mimeType: string;
-	text?: string;
 }
 
 export interface ToolResponse {
@@ -97,7 +94,6 @@ export const callTool = async (
 			images.push({
 				data: imageData,
 				mimeType,
-				text: item.text,
 			});
 
 			// Add reference to image in text

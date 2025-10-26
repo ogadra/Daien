@@ -6,6 +6,8 @@ import {
 	useId,
 	useRef,
 } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import {
 	callTool,
 	type Tool,
@@ -86,79 +88,10 @@ export const Tools = ({
 						);
 						if (!selectedTool) return null;
 
-						const renderValue = (value: any, depth = 0): React.ReactNode => {
-							const indent = "  ".repeat(depth);
-
-							if (value === null)
-								return <span style={{ color: "#999" }}>null</span>;
-							if (value === undefined)
-								return <span style={{ color: "#999" }}>undefined</span>;
-							if (typeof value === "string")
-								return <span style={{ color: "#0c7b2e" }}>"{value}"</span>;
-							if (typeof value === "number")
-								return <span style={{ color: "#0366d6" }}>{value}</span>;
-							if (typeof value === "boolean")
-								return (
-									<span style={{ color: "#e3116c" }}>{value.toString()}</span>
-								);
-
-							if (Array.isArray(value)) {
-								if (value.length === 0) return <span>[]</span>;
-								return (
-									<>
-										<span>[</span>
-										{value.map((item, index) => (
-											// biome-ignore lint/suspicious/noArrayIndexKey: tmporary
-											<div key={index} style={{ whiteSpace: "pre" }}>
-												{indent} {renderValue(item, depth + 1)}
-												{index < value.length - 1 && <span>,</span>}
-											</div>
-										))}
-										<span style={{ whiteSpace: "pre" }}>{indent}]</span>
-									</>
-								);
-							}
-
-							if (typeof value === "object") {
-								const entries = Object.entries(value);
-								if (entries.length === 0) return <span>{"{}"}</span>;
-								return (
-									<>
-										<span>{"{"}</span>
-										{entries.map(([key, val], index) => (
-											<div key={key} style={{ whiteSpace: "pre" }}>
-												{indent}{" "}
-												<span style={{ color: "#6f42c1" }}>"{key}"</span>:{" "}
-												{renderValue(val, depth + 1)}
-												{index < entries.length - 1 && <span>,</span>}
-											</div>
-										))}
-										<span style={{ whiteSpace: "pre" }}>
-											{indent}
-											{"}"}
-										</span>
-									</>
-								);
-							}
-
-							return <span>{String(value)}</span>;
-						};
-
 						return (
-							<div
-								style={{
-									margin: "8px 0",
-									padding: "12px",
-									backgroundColor: "#f6f8fa",
-									borderRadius: "4px",
-									fontFamily: "monospace",
-									fontSize: "14px",
-									textAlign: "left",
-									overflowX: "scroll",
-								}}
-							>
-								{renderValue(selectedTool)}
-							</div>
+							<SyntaxHighlighter style={oneDark} language={"json"} PreTag="div">
+								{JSON.stringify(selectedTool, null, 2)}
+							</SyntaxHighlighter>
 						);
 					})()}
 
