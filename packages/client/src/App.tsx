@@ -5,7 +5,7 @@ import {
 	listTools,
 	type Tool,
 	type ToolResponse,
-} from "../lib/PlaywrightMCPClient";
+} from "../lib/MCPClient";
 import { Result } from "./components/result";
 import { Tools } from "./components/tools";
 

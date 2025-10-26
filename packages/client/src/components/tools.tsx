@@ -8,11 +8,7 @@ import {
 } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import {
-	callTool,
-	type Tool,
-	type ToolResponse,
-} from "../../lib/PlaywrightMCPClient";
+import { callTool, type Tool, type ToolResponse } from "../../lib/MCPClient";
 
 interface Props {
 	tools: Tool[];
