@@ -7,7 +7,14 @@ import {
 	type ToolResponse,
 } from "../lib/PlaywrightMCPClient";
 import "./App.css";
-import { Button, Heading, HStack, Select, Textarea, VStack } from "@packages/ui";
+import {
+	Button,
+	Heading,
+	HStack,
+	Select,
+	Textarea,
+	VStack,
+} from "@packages/ui";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -81,7 +88,7 @@ const App = () => {
 			<Heading as="h1" style={{ fontSize: "3rem" }}>
 				Daien (代演)
 			</Heading>
-			<Heading as="h2" style={{ fontSize: "1rem", fontWeight: "normal"}}>
+			<Heading as="h2" style={{ fontSize: "1rem", fontWeight: "normal" }}>
 				LLMの代わりに人力でMCPを呼び出す
 			</Heading>
 
