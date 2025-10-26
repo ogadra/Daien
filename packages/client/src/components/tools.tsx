@@ -8,7 +8,12 @@ import {
 } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { callTool, type Tool, type ToolResponse } from "../../lib/MCPClient";
+import {
+	callTool,
+	type Tool,
+	type ToolCallArgs,
+	type ToolResponse,
+} from "../../lib/MCPClient";
 
 interface Props {
 	tools: Tool[];
@@ -19,11 +24,7 @@ interface Props {
 	setResult: Dispatch<SetStateAction<ToolResponse | null>>;
 }
 
-interface ToolCallArgs {
-	[k: string]: ToolCallArgs;
-}
-
-const parseJSON = (str?: string): ToolCallArgs => {
+const parseJSONToToolCallArgs = (str?: string): ToolCallArgs => {
 	if (!str) return {};
 	try {
 		return JSON.parse(str);
@@ -49,7 +50,10 @@ export const Tools = ({
 
 		const toolArgs = argsRef.current?.value;
 		try {
-			const data = await callTool(useToolName, parseJSON(toolArgs));
+			const data = await callTool(
+				useToolName,
+				parseJSONToToolCallArgs(toolArgs),
+			);
 			setResult(data);
 		} catch (error) {
 			setResult({

@@ -55,6 +55,10 @@ export interface ToolResponse {
 	images: ImageContent[];
 }
 
+export interface ToolCallArgs {
+	[k: string]: ToolCallArgs;
+}
+
 export const listTools = async (): Promise<Tool[]> => {
 	const req: ListToolsRequest = {
 		method: "tools/list",
@@ -68,7 +72,7 @@ export const listTools = async (): Promise<Tool[]> => {
 
 export const callTool = async (
 	toolName: string,
-	arguments_: Record<string, any>,
+	arguments_: ToolCallArgs,
 ): Promise<ToolResponse> => {
 	const req: CallToolRequest = {
 		method: "tools/call",
