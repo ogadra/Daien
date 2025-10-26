@@ -8,12 +8,8 @@ import {
 } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import {
-	callTool,
-	type Tool,
-	type ToolCallArgs,
-	type ToolResponse,
-} from "../../lib/MCPClient";
+import type { MCPClient } from "../../lib/MCPClient";
+import type { Tool, ToolCallArgs, ToolResponse } from "../../lib/types";
 
 interface Props {
 	tools: Tool[];
@@ -21,7 +17,8 @@ interface Props {
 	setUseToolName: Dispatch<SetStateAction<string>>;
 	loading: boolean;
 	setLoading: Dispatch<SetStateAction<boolean>>;
-	setResult: Dispatch<SetStateAction<ToolResponse | null>>;
+	setResult: Dispatch<SetStateAction<ToolResponse[]>>;
+	client: MCPClient;
 }
 
 const parseJSONToToolCallArgs = (str?: string): ToolCallArgs => {
@@ -40,6 +37,7 @@ export const Tools = ({
 	loading,
 	setLoading,
 	setResult,
+	client,
 }: Props): JSX.Element => {
 	const argsRef = useRef<HTMLTextAreaElement | null>(null);
 	const textAreaId = useId();
@@ -50,23 +48,33 @@ export const Tools = ({
 
 		const toolArgs = argsRef.current?.value;
 		try {
-			const data = await callTool(
-				useToolName,
-				parseJSONToToolCallArgs(toolArgs),
-			);
-			setResult(data);
-		} catch (error) {
-			setResult({
-				text: `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
-				images: [],
+			const data = await client.callTool({
+				name: useToolName,
+				arguments: parseJSONToToolCallArgs(toolArgs),
 			});
+			const content = data.content as ToolResponse[];
+			if (!content) return;
+
+			setResult(content);
+		} catch (error) {
+			setResult([
+				{
+					type: "text",
+					text: `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+				},
+			]);
 		}
 		setLoading(false);
 	};
 
 	return (
-		<VStack width="50vw" align="center" justify="start">
-			<div style={{ width: "80%" }}>
+		<VStack
+			width="50%"
+			align="center"
+			justify="start"
+			style={{ margin: "0 2px 0 8px" }}
+		>
+			<div style={{ width: "100%" }}>
 				<h3>Available Tools:</h3>
 				<VStack style={{ marginBottom: "8px" }}>
 					<Select.Root

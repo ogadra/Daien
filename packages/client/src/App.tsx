@@ -1,40 +1,37 @@
 import { Button, Heading, HStack } from "@packages/ui";
-import { type JSX, useCallback, useState } from "react";
-import {
-	initialize,
-	listTools,
-	type Tool,
-	type ToolResponse,
-} from "../lib/MCPClient";
+import { type JSX, useMemo, useState } from "react";
+import { MCPClient } from "../lib/MCPClient";
+import type { Tool, ToolResponse } from "../lib/types";
 import { Result } from "./components/result";
 import { Tools } from "./components/tools";
 
 const App = (): JSX.Element => {
 	const [useToolName, setUseToolName] = useState<string>("browser_navigate");
 
-	const [result, setResult] = useState<ToolResponse | null>(null);
+	const [result, setResult] = useState<ToolResponse[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [tools, setTools] = useState<Tool[]>([]);
-
-	const getTools = useCallback(async () => {
-		try {
-			const data = await listTools();
-			setTools(data);
-		} catch (error) {
-			console.error("Error fetching tools:", error);
-		}
-	}, []);
+	const client = useMemo(() => new MCPClient(), []);
 
 	const handleInitialize = async () => {
 		setLoading(true);
 		try {
-			await initialize();
-			await getTools();
+			await client.initialize();
+			const res = await client.listTools();
+			setTools(res.tools);
+			setResult([
+				{
+					text: "Initialization and tool listing successful.",
+					type: "text",
+				},
+			]);
 		} catch (error) {
-			setResult({
-				text: `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
-				images: [],
-			});
+			setResult([
+				{
+					text: `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+					type: "text",
+				},
+			]);
 		}
 		setLoading(false);
 	};
@@ -63,10 +60,15 @@ const App = (): JSX.Element => {
 				loading={loading}
 				style={{ margin: "16px" }}
 			>
-				Initialize
+				Call initalize & tools/list
 			</Button>
 
-			<HStack align="start">
+			<HStack
+				align="start"
+				justify="center"
+				gap="24px"
+				style={{ width: "98%" }}
+			>
 				<Tools
 					tools={tools}
 					useToolName={useToolName}
@@ -74,6 +76,7 @@ const App = (): JSX.Element => {
 					loading={loading}
 					setLoading={setLoading}
 					setResult={setResult}
+					client={client}
 				/>
 				<Result result={result} loading={loading} />
 			</HStack>
