@@ -7,28 +7,6 @@ import {
 	ListToolsResultSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 
-const mcpServerUrl = import.meta.env.VITE_MCP_SERVER_URL;
-if (!mcpServerUrl) {
-	throw new Error("VITE_MCP_SERVER_URL environment variable is required");
-}
-
-const transport = new StreamableHTTPClientTransport(new URL(mcpServerUrl), {
-	sessionId: undefined,
-});
-
-const client = new Client({
-	name: "daien",
-	version: "0.0.1",
-});
-
-client.onerror = (error) => {
-	console.error("Client error:", error);
-};
-
-export const initialize = async () => {
-	await client.connect(transport);
-};
-
 export interface Tool {
 	name: string;
 	description?: string;
@@ -58,6 +36,28 @@ export interface ToolResponse {
 export interface ToolCallArgs {
 	[k: string]: ToolCallArgs;
 }
+
+const mcpServerUrl = import.meta.env.VITE_MCP_SERVER_URL;
+if (!mcpServerUrl) {
+	throw new Error("VITE_MCP_SERVER_URL environment variable is required");
+}
+
+const transport = new StreamableHTTPClientTransport(new URL(mcpServerUrl), {
+	sessionId: undefined,
+});
+
+const client = new Client({
+	name: "daien",
+	version: "0.0.1",
+});
+
+client.onerror = (error) => {
+	console.error("Client error:", error);
+};
+
+export const initialize = async () => {
+	await client.connect(transport);
+};
 
 export const listTools = async (): Promise<Tool[]> => {
 	const req: ListToolsRequest = {
