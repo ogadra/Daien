@@ -24,14 +24,11 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - ./packages/client:/app/packages/client
-      - ./packages/ui:/app/packages/ui
-      - ./package.json:/app/package.json
-      - ./pnpm-lock.yaml:/app/pnpm-lock.yaml
-      - ./pnpm-workspace.yaml:/app/pnpm-workspace.yaml
       - node_modules_cache:/app/packages/client/node_modules
+      - dist_cache:/app/packages/client/dist
     environment:
       - NODE_ENV=development
     restart: unless-stopped
 volumes:
   node_modules_cache:
+  dist_cache:
