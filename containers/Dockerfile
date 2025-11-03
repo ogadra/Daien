@@ -14,4 +14,4 @@ RUN apt-get update && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 
-RUN corepack enable pnpm && pnpm dlx playwright install --with-deps chromium
+RUN corepack enable pnpm && pnpm dlx playwright install --with-deps chrome
