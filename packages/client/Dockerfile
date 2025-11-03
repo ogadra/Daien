@@ -14,13 +14,14 @@ COPY pnpm-workspace.yaml ./
 COPY packages/ui ./packages/ui
 COPY packages/client ./packages/client
 
+# Copy environment files
+COPY packages/client/.env.local ./packages/client/.env
+
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
 # Set working directory to client
 WORKDIR /app/packages/client
-
-RUN pnpm build
 
 # Start development server
 CMD ["pnpm", "dev", "--host", "0.0.0.0"]
