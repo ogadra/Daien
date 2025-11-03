@@ -67,6 +67,11 @@ export const Tools = ({
 		setLoading(false);
 	};
 
+	const onSelectChange = (value: string) => {
+		if (argsRef.current) argsRef.current.value = "";
+		setUseToolName(value);
+	};
+
 	return (
 		<VStack
 			width="50%"
@@ -77,10 +82,7 @@ export const Tools = ({
 			<div style={{ width: "100%" }}>
 				<h3>Available Tools:</h3>
 				<VStack style={{ marginBottom: "8px" }}>
-					<Select.Root
-						value={useToolName}
-						onChange={(value) => setUseToolName(value)}
-					>
+					<Select.Root value={useToolName} onChange={onSelectChange}>
 						{tools.map((tool) => (
 							<Select.Option key={tool.name} value={tool.name}>
 								{tool.name}
