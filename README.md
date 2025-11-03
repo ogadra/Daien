@@ -8,7 +8,9 @@ LLM の代わりに人力で Playwright MCP を呼び出すための Web アプ�
 
 ## 概要
 
-Daien は、LLM による自動実行ではなく、手動で MCP ツールを呼び出すことができる Web アプリケーションです。MCP サーバーに接続し、利用可能なツールの一覧を表示し、手動でパラメータを入力してツールを実行できます。
+Daien は、LLM による自動実行ではなく、手動で MCP ツールを呼び出すことができる Web アプリケーションです。
+
+MCP サーバーに接続し、利用可能なツールの一覧を表示し、手動でパラメータを入力してツールを実行できます。
 
 ## 起動
 
@@ -41,10 +43,11 @@ daien/
 ├── packages/
 │   ├── client/          # React アプリケーション
 │   └── ui/              # 共有 UI コンポーネント
-├── containers/          # Docker 設定
 └── compose.yml          # Docker Compose 設定
 ```
 
 ## MCP について
 
-Model Context Protocol (MCP) は、AI アシスタントとローカルおよびリモートリソース間の標準化された通信プロトコルです。Daien は Playwright MCP に接続し、ツールを手動で実行することで、LLM と MCP の動作を理解するのに役立ちます。
+Model Context Protocol (MCP) は、AI アシスタントとローカルおよびリモートリソース間の標準化された通信プロトコルです。
+
+Daien は Playwright MCP に接続し、ツールを手動で実行することで、LLM と MCP の動作を理解するのに役立ちます。
