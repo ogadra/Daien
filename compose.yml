@@ -1,0 +1,32 @@
+services:
+  playwright-mcp:
+    build:
+      context: ./containers
+      dockerfile: Dockerfile
+    tty: true
+    ports:
+      - "8010:8010"
+    command: ["/bin/bash", "-c", "./scripts/xvfb.sh && tail -f /dev/null"]
+    volumes:
+      - ./images:/app/images
+      - ./containers/scripts:/app/scripts
+  client:
+    depends_on:
+      - "playwright-mcp"
+    build:
+      context: .
+      dockerfile: ./packages/client/Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./packages/client:/app/packages/client
+      - ./packages/ui:/app/packages/ui
+      - ./package.json:/app/package.json
+      - ./pnpm-lock.yaml:/app/pnpm-lock.yaml
+      - ./pnpm-workspace.yaml:/app/pnpm-workspace.yaml
+      - node_modules_cache:/app/packages/client/node_modules
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
+volumes:
+  node_modules_cache:
