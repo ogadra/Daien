@@ -10,9 +10,14 @@ services:
     volumes:
       - ./images:/app/images
       - ./containers/scripts:/app/scripts
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:8000/health" ]
+      interval: 1s
+      retries: 10
   client:
     depends_on:
-      - "playwright-mcp"
+      playwright-mcp:
+        condition: service_healthy
     build:
       context: .
       dockerfile: ./packages/client/Dockerfile
