@@ -10,6 +10,8 @@ services:
     volumes:
       - ./images:/app/images
       - ./containers/scripts:/app/scripts
+    tmpfs:
+      - /tmp
     healthcheck:
       test: ["CMD", "curl", "http://localhost:8000/health" ]
       interval: 1s
