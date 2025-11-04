@@ -2,6 +2,8 @@
 
 LLM の代わりに人力で Playwright MCP を呼び出すための Web アプリケーションです。
 
+![実際の動作の様子。ブラウザからPlaywright MCPを呼び出し、ブラウザを自動操作している。](./media/demo.gif)
+
 [Work≠Build Meetup Tokyo feat ryoppippi](https://wnb.connpass.com/event/371722/)にて、デモを行いました。
 
 当日のスライドは[深堀り! Playwright MCP](https://slide.ogadra.com/playwright-mcp-deep-dive/)をご覧ください。
