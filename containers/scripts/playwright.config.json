@@ -4,10 +4,12 @@
 		"port": 8000
 	},
 	"browser": {
+		"browserName": "chromium",
 		"isolated": true,
 		"launchOptions": {
 			"headless": false,
-			"args": ["--no-sandbox", "--disable-dev-shm-usage", "--no-zygote"]
+			"args": ["--no-sandbox", "--disable-dev-shm-usage", "--no-zygote"],
+			"executablePath": "/root/.cache/ms-playwright/chromium-1194/chrome-linux/chrome"
 		},
 		"contextOptions": {
 			"viewport": {

@@ -15,7 +15,7 @@ services:
     healthcheck:
       test: ["CMD", "curl", "http://localhost:8000/health" ]
       interval: 1s
-      retries: 10
+      retries: 30
   client:
     depends_on:
       playwright-mcp:
